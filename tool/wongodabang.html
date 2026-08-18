@@ -496,6 +496,8 @@
             <div class="field"><label for="parking">주차</label><input type="text" id="parking" oninput="render()"></div>
             <div class="field"><label for="station">역 · 거리</label><input type="text" id="station" oninput="render()"></div>
           </div>
+          <div class="field"><label for="npExtra">기타 정보 (한 줄에 하나씩 — 단체석 인원, 주차요금, 와이파이 등)</label>
+            <textarea id="npExtra" oninput="render()" placeholder="예)&#10;단체석 최대 40명&#10;주차요금 30분당 1000원"></textarea></div>
         </details>
 
         <div class="field" style="margin-top:.9rem;">
@@ -662,28 +664,38 @@
   /* ---------- 네이버플레이스 붙여넣기 파서 ---------- */
   function parseNaverInfo(raw){
     const lines = raw.split(/\n+/).map(l=>l.trim()).filter(Boolean);
-    const res = { address:'', hours:'', closed:'', phone:'', parking:'', station:'' };
+    const res = { address:'', hours:'', closed:'', phone:'', parking:'', station:'', extra:[] };
     const phoneRe = /(0\d{1,2}[-.\s]?\d{3,4}[-.\s]?\d{4})/;
     const timeRe = /\d{1,2}\s*:\s*\d{2}\s*[-~]\s*\d{1,2}\s*:\s*\d{2}/;
     const distRe = /\d+\s?m\b/;
-    for (const line of lines){
-      if (!res.phone){ const m = line.match(phoneRe); if (m) res.phone = m[1]; }
-      if (!res.hours){ const m = line.match(timeRe); if (m) res.hours = m[0].replace(/\s+/g,''); }
-      if (!res.closed && /휴무/.test(line)){
-        res.closed = line.replace(/^[^가-힣]*/,'').replace(/정기휴무|휴무일?|[-:]/g,' ').replace(/\s+/g,' ').trim();
+    const parkingParts = [], closedParts = [];
+    lines.forEach((line, idx) => {
+      let used = false;
+      if (!res.phone){ const m = line.match(phoneRe); if (m){ res.phone = m[1]; used = true; } }
+      if (!res.hours){ const m = line.match(timeRe); if (m){ res.hours = m[0].replace(/\s+/g,''); used = true; } }
+      if (/휴무/.test(line)){
+        closedParts.push(line.replace(/^[^가-힣]*/,'').replace(/정기휴무|휴무일?|[-:]/g,' ').replace(/\s+/g,' ').trim());
+        used = true;
       }
-      if (!res.parking && /주차/.test(line)){
-        res.parking = line.replace(/^[^가-힣]*/,'').trim();
+      if (/주차/.test(line)){
+        parkingParts.push(line.replace(/^[^가-힣]*/,'').trim());
+        used = true;
       }
       if (!res.station && /역/.test(line) && (/출구/.test(line) || distRe.test(line))){
         res.station = line.replace(/^[^가-힣]*/,'').trim();
+        used = true;
       }
       if (!res.address){
         const hasRoad = /(로|길|동|가)\s?\d/.test(line) || /(시|도)\s?[가-힣]+(시|군|구)/.test(line);
         const isNoise = /휴무|주차|영업|전화|출구|^\d{2,3}[-.\s]?\d{3,4}/.test(line) || timeRe.test(line) || phoneRe.test(line);
-        if (hasRoad && !isNoise) res.address = line;
+        if (hasRoad && !isNoise){ res.address = line; used = true; }
       }
-    }
+      // 첫 줄은 보통 가게명 헤더라 별도 정보로 취급하지 않음
+      if (idx === 0 && !used && !/\d/.test(line) && line.length <= 24) used = true;
+      if (!used) res.extra.push(line);
+    });
+    res.closed = closedParts.join(' · ');
+    res.parking = parkingParts.join(' · ');
     return res;
   }
   function onNpRaw(){
@@ -695,12 +707,18 @@
     document.getElementById('phone').value = p.phone;
     document.getElementById('parking').value = p.parking;
     document.getElementById('station').value = p.station;
+    document.getElementById('npExtra').value = p.extra.join('\n');
     render();
   }
+  function readNpExtra(){
+    return val('npExtra').split(/\n+/).map(l=>l.trim()).filter(Boolean);
+  }
   function updateNpPills(){
+    const extra = readNpExtra();
     const items = [
       ['📍', val('addr')], ['🕓', val('hours') + (val('closed') ? ` · 휴무 ${val('closed')}` : '')],
-      ['📞', val('phone')], ['🅿️', val('parking')], ['🚇', val('station')]
+      ['📞', val('phone')], ['🅿️', val('parking')], ['🚇', val('station')],
+      ...extra.map(line => ['📌', line])
     ].filter(([,v]) => v && v.trim());
     const box = document.getElementById('npPills');
     box.innerHTML = items.length
@@ -851,13 +869,15 @@
     let html = '';
     html += `<h1 class="prev-title">${escapeHtml(title || place)}</h1>`;
 
-    if (addr || hours || closed || phone || parking || station){
+    const npExtra = readNpExtra();
+    if (addr || hours || closed || phone || parking || station || npExtra.length){
       html += `<div class="infocard"><div class="infohead"><span>${escapeHtml(place || '가게명')}</span><span>NAVER PLACE</span></div>`;
       if (addr) html += `<div class="row"><span class="key">📍 주소</span><span>${escapeHtml(addr)}</span></div>`;
       if (hours) html += `<div class="row"><span class="key">🕓 시간</span><span>${escapeHtml(hours)}${closed?` · 휴무 ${escapeHtml(closed)}`:''}</span></div>`;
       if (phone) html += `<div class="row"><span class="key">📞 전화</span><span>${escapeHtml(phone)}</span></div>`;
       if (parking) html += `<div class="row"><span class="key">🅿️ 주차</span><span>${escapeHtml(parking)}</span></div>`;
       if (station) html += `<div class="row"><span class="key">🚇 위치</span><span>${escapeHtml(station)}</span></div>`;
+      npExtra.forEach(line => { html += `<div class="row"><span class="key">📌</span><span>${escapeHtml(line)}</span></div>`; });
       html += `</div>`;
     }
 
@@ -919,6 +939,7 @@
     if (hours) lines.push(`🕓 ${hours}${closed ? ` (휴무 ${closed})` : ''}`);
     if (phone) lines.push(`📞 ${phone}`);
     if (parking) lines.push(`🅿️ ${parking}`);
+    readNpExtra().forEach(line => lines.push(`📌 ${line}`));
     lines.push('', '------', '');
     if (intro) lines.push(intro, '');
     if (station) lines.push(`${place || '이곳'}은 ${station}에 위치하고 있어요.`, '');
