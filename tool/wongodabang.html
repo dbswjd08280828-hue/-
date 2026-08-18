@@ -1,0 +1,893 @@
+<title>원고다방</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#F2EFFB;
+    --surface:#FFFFFF;
+    --surface-2:#F7F5FD;
+    --surface-3:#EEE9FB;
+    --border:#E6E1F7;
+    --ink:#1E1B2E;
+    --ink-soft:#635C78;
+    --ink-faint:#9891AC;
+    --accent:#7C5CFA;
+    --accent-strong:#6540EF;
+    --accent-soft:#EEE8FE;
+    --accent-ink:#FFFFFF;
+    --accent-2:#A855F7;
+    --accent-2-soft:#F6ECFE;
+    --good:#1FA971;
+    --good-soft:#E3F6ED;
+    --warn:#C98A1D;
+    --warn-soft:#FBF0DC;
+    --critical:#D6483F;
+    --critical-soft:#FBE5E3;
+    --code-bg:#211D33;
+    --code-ink:#E7E1FB;
+    --code-border:#342C52;
+    --code-key:#B9A6FF;
+    --shadow: 0 1px 2px rgba(30,23,58,.04), 0 14px 30px -18px rgba(30,23,58,.22);
+    --shadow-sm: 0 1px 2px rgba(30,23,58,.05), 0 6px 14px -8px rgba(30,23,58,.2);
+    --font-sans:'IBM Plex Sans KR','Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    --font-mono:'IBM Plex Mono','SFMono-Regular',Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#15121F;
+      --surface:#1D1930;
+      --surface-2:#241F3B;
+      --surface-3:#2B2447;
+      --border:#352C54;
+      --ink:#F1EDFC;
+      --ink-soft:#B7AFD1;
+      --ink-faint:#847AA3;
+      --accent:#9B82FF;
+      --accent-strong:#B39CFF;
+      --accent-soft:#2C2452;
+      --accent-ink:#1B1530;
+      --accent-2:#D298FF;
+      --accent-2-soft:#3B2350;
+      --good:#4FD48E;
+      --good-soft:#16321F;
+      --warn:#E0B24E;
+      --warn-soft:#3A2E12;
+      --critical:#F17A6E;
+      --critical-soft:#3A1E1C;
+      --code-bg:#0F0D1A;
+      --code-ink:#DCD4FA;
+      --code-border:#2A2445;
+      --code-key:#C4B2FF;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 16px 34px -18px rgba(0,0,0,.6);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.3), 0 8px 16px -10px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#15121F;
+    --surface:#1D1930;
+    --surface-2:#241F3B;
+    --surface-3:#2B2447;
+    --border:#352C54;
+    --ink:#F1EDFC;
+    --ink-soft:#B7AFD1;
+    --ink-faint:#847AA3;
+    --accent:#9B82FF;
+    --accent-strong:#B39CFF;
+    --accent-soft:#2C2452;
+    --accent-ink:#1B1530;
+    --accent-2:#D298FF;
+    --accent-2-soft:#3B2350;
+    --good:#4FD48E;
+    --good-soft:#16321F;
+    --warn:#E0B24E;
+    --warn-soft:#3A2E12;
+    --critical:#F17A6E;
+    --critical-soft:#3A1E1C;
+    --code-bg:#0F0D1A;
+    --code-ink:#DCD4FA;
+    --code-border:#2A2445;
+    --code-key:#C4B2FF;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 16px 34px -18px rgba(0,0,0,.6);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.3), 0 8px 16px -10px rgba(0,0,0,.55);
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-sans);
+    font-size:15.5px;
+    line-height:1.6;
+  }
+  ::selection{ background:var(--accent-soft); color:var(--ink); }
+
+  .wrap{ max-width:1300px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+
+  header.top{
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1.5rem;
+    flex-wrap:wrap;
+    margin-bottom:1.5rem;
+    padding:1.4rem 1.6rem;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+  }
+  header.top::before{
+    content:"";
+    position:absolute;
+    inset:-60% -10% auto 30%;
+    height:180%;
+    background:radial-gradient(50% 50% at 50% 30%, color-mix(in srgb, var(--accent) 32%, transparent), transparent 70%);
+    filter:blur(36px);
+    opacity:.6;
+    pointer-events:none;
+  }
+  header.top > *{ position:relative; z-index:1; }
+  .brand{ display:flex; align-items:center; gap:.7rem; }
+  .brand .logo{
+    width:2.15rem; height:2.15rem;
+    border-radius:11px;
+    background:linear-gradient(135deg, var(--accent), var(--accent-strong));
+    color:var(--accent-ink);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:1.02rem;
+    box-shadow:0 8px 18px -8px color-mix(in srgb, var(--accent) 65%, transparent);
+    flex-shrink:0;
+  }
+  .brand .name{ font-weight:700; font-size:1.28rem; color:var(--ink); letter-spacing:-.01em; }
+  .brand .tagpill{
+    font-size:.66rem; font-weight:600; color:var(--accent-strong);
+    background:var(--accent-soft); padding:.28rem .6rem; border-radius:999px;
+    letter-spacing:.02em; font-family:var(--font-mono);
+  }
+  .brand-block{ display:flex; flex-direction:column; gap:.5rem; }
+  .brand-row{ display:flex; align-items:center; gap:.65rem; flex-wrap:wrap; }
+  header.top p{ margin:0; color:var(--ink-soft); max-width:50ch; font-size:.86rem; }
+  .theme-note{ font-size:.74rem; color:var(--ink-faint); font-family:var(--font-mono); white-space:nowrap; }
+
+  details.guide{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:18px;
+    margin-bottom:1.5rem;
+    box-shadow:var(--shadow-sm);
+  }
+  details.guide summary{
+    cursor:pointer;
+    padding:.9rem 1.15rem;
+    font-weight:600;
+    font-size:.92rem;
+    color:var(--ink);
+    list-style:none;
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+  }
+  details.guide summary::before{ content:"☕"; font-size:.9rem; }
+  details.guide summary::-webkit-details-marker{ display:none; }
+  details.guide .guide-body{
+    padding:0 1.15rem 1.15rem;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:.8rem;
+  }
+  .guide-card{ background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:.85rem .95rem; }
+  .guide-card h4{
+    display:inline-flex; margin:0 0 .55rem; font-size:.68rem; font-weight:600;
+    color:var(--accent-strong); background:var(--accent-soft);
+    padding:.25rem .55rem; border-radius:999px; letter-spacing:.02em;
+  }
+  .guide-card ul{ margin:0; padding-left:1.05rem; font-size:.83rem; color:var(--ink-soft); }
+  .guide-card li{ margin-bottom:.3rem; }
+
+  .layout{ display:grid; grid-template-columns: 176px minmax(360px, 460px) 1fr; gap:1.4rem; align-items:start; }
+  @media (max-width: 1199px){ .layout{ grid-template-columns: minmax(360px, 460px) 1fr; } .stepnav{ display:none; } }
+  @media (max-width: 980px){ .layout{ grid-template-columns:1fr; } }
+
+  .stepnav{
+    position:sticky; top:1.25rem; display:flex; flex-direction:column; gap:.15rem;
+    background:var(--surface); border:1px solid var(--border); border-radius:18px;
+    padding:.6rem; box-shadow:var(--shadow-sm);
+  }
+  .stepnav-item{
+    display:flex; align-items:center; gap:.55rem; background:none; border:none; text-align:left;
+    padding:.5rem .5rem; border-radius:11px; cursor:pointer; color:var(--ink-faint);
+    font-size:.78rem; font-family:var(--font-sans);
+  }
+  .stepnav-item .num{
+    width:1.4rem; height:1.4rem; border-radius:50%; background:var(--surface-2); color:var(--ink-faint);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono);
+    font-size:.68rem; flex-shrink:0; border:1px solid var(--border);
+  }
+  .stepnav-item.active{ background:var(--accent-soft); color:var(--accent-strong); font-weight:600; }
+  .stepnav-item.active .num{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+  .stepnav-item:hover:not(.active){ color:var(--ink-soft); }
+
+  .panel{ background:var(--surface); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); }
+  .form-panel{ padding:1.5rem 1.5rem 1.7rem; }
+  .step{ margin-bottom:1.7rem; scroll-margin-top:1.25rem; }
+  .step:last-child{ margin-bottom:0; }
+  .step-head{ display:flex; align-items:center; gap:.6rem; margin-bottom:.7rem; }
+  .step-num{
+    font-family:var(--font-mono); font-size:.72rem; font-weight:600; color:var(--accent-strong);
+    background:var(--accent-soft); border-radius:50%; width:1.6rem; height:1.6rem;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .step-head h2{ margin:0; font-weight:600; font-size:.98rem; color:var(--ink); }
+  .step-hint{ margin:0 0 .6rem 2.2rem; font-size:.76rem; color:var(--ink-faint); }
+
+  .field{ margin-bottom:.65rem; }
+  .field label{ display:block; font-size:.74rem; font-weight:500; color:var(--ink-faint); margin-bottom:.32rem; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+  input[type=text], textarea{
+    width:100%; font-family:var(--font-sans); font-size:.88rem; color:var(--ink);
+    background:var(--surface-2); border:1px solid var(--border); border-radius:10px;
+    padding:.6rem .7rem; resize:vertical;
+  }
+  input[type=text]:focus, textarea:focus{
+    outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); background:var(--surface);
+  }
+  textarea{ min-height:4.2rem; line-height:1.55; }
+  textarea.tall{ min-height:6rem; }
+
+  .rowlist .rowitem{
+    display:grid; grid-template-columns:1fr auto; gap:.5rem; align-items:start;
+    margin-bottom:.5rem; padding:.6rem .65rem; background:var(--surface-2);
+    border:1px solid var(--border); border-radius:12px;
+  }
+  .rowlist .rowitem .rowfields{ display:flex; flex-direction:column; gap:.4rem; }
+  .rowlist .rowitem .rowfields.inline{ flex-direction:row; }
+  .rowlist .rowitem .rowfields.inline input{ flex:1; }
+  .rowlist .rowitem .rowfields.inline input.price{ max-width:6.5rem; flex:none; font-family:var(--font-mono); }
+  .btn-remove{
+    border:1px solid var(--border); background:var(--surface); color:var(--ink-faint);
+    border-radius:8px; width:1.75rem; height:1.75rem; cursor:pointer; font-size:.85rem; line-height:1;
+  }
+  .btn-remove:hover{ color:var(--critical); border-color:var(--critical); }
+
+  .btn-add{
+    display:inline-flex; align-items:center; gap:.35rem; background:none;
+    border:1.5px dashed var(--border); color:var(--accent-strong); font-family:var(--font-sans);
+    font-weight:500; font-size:.8rem; padding:.42rem .75rem; border-radius:10px; cursor:pointer; margin-top:.15rem;
+  }
+  .btn-add:hover{ background:var(--accent-soft); border-color:var(--accent); }
+
+  .chips{ display:flex; flex-wrap:wrap; gap:.4rem; margin:.55rem 0 0 2.2rem; }
+  .chip{
+    font-size:.74rem; font-weight:500; padding:.34rem .65rem; border-radius:999px;
+    border:1px solid var(--border); background:var(--surface); color:var(--ink-soft);
+    cursor:pointer; font-family:var(--font-sans);
+  }
+  .chip:hover{ border-color:var(--accent); color:var(--accent-strong); background:var(--accent-soft); }
+  .chip.static{ cursor:default; }
+  .chip.static:hover{ border-color:var(--border); color:var(--ink-soft); background:var(--surface); }
+
+  .titlegen{ display:flex; gap:.5rem; margin-bottom:.5rem; flex-wrap:wrap; }
+  .btn-primary{
+    background:var(--accent); color:var(--accent-ink); border:none; border-radius:10px;
+    padding:.6rem .95rem; font-family:var(--font-sans); font-weight:600; font-size:.84rem; cursor:pointer;
+  }
+  .btn-primary:hover{ background:var(--accent-strong); }
+  .btn-ghost{
+    background:var(--surface); border:1px solid var(--border); color:var(--ink-soft); border-radius:10px;
+    padding:.6rem .95rem; font-family:var(--font-sans); font-weight:600; font-size:.84rem; cursor:pointer;
+  }
+  .btn-ghost:hover{ border-color:var(--accent); color:var(--accent-strong); }
+
+  .title-candidates{ display:flex; flex-direction:column; gap:.4rem; margin-top:.5rem; }
+  .title-cand{
+    text-align:left; background:var(--surface-2); border:1px solid var(--border); border-radius:10px;
+    padding:.55rem .7rem; font-size:.83rem; color:var(--ink); cursor:pointer;
+  }
+  .title-cand:hover{ border-color:var(--accent); background:var(--accent-soft); }
+
+  details.npedit{ margin-top:.6rem; margin-left:2.2rem; }
+  details.npedit summary{
+    cursor:pointer; font-size:.78rem; color:var(--accent-strong); font-weight:500; list-style:none;
+  }
+  details.npedit summary::-webkit-details-marker{ display:none; }
+  details.npedit .field-row{ margin-top:.6rem; }
+
+  .preview-col{ position:relative; }
+  @media (min-width:981px){ .preview-col{ position:sticky; top:1.25rem; max-height:calc(100vh - 2.5rem); overflow-y:auto; } }
+  .status-bar{
+    position:relative; overflow:hidden; padding:1.1rem 1.3rem 1rem; border-bottom:1px solid var(--border);
+    display:flex; flex-direction:column; gap:.7rem;
+  }
+  .status-bar::before{
+    content:""; position:absolute; inset:-60% -10% auto 10%; height:180%;
+    background:radial-gradient(55% 55% at 40% 25%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 70%);
+    filter:blur(30px); opacity:.55; pointer-events:none;
+  }
+  .status-bar > *{ position:relative; z-index:1; }
+  .status-row{ display:flex; align-items:center; justify-content:space-between; gap:.7rem; flex-wrap:wrap; }
+  .status-row h3{ margin:0; font-weight:600; font-size:.9rem; color:var(--ink-soft); }
+  .actions{ display:flex; gap:.5rem; }
+
+  .stat-chip{
+    display:inline-flex; align-items:center; gap:.4rem; font-family:var(--font-mono); font-weight:500;
+    font-size:.74rem; padding:.32rem .68rem; border-radius:999px; background:var(--surface); border:1px solid var(--border);
+  }
+  .stat-chip[data-state="good"]{ background:var(--good-soft); color:var(--good); border-color:transparent; }
+  .stat-chip[data-state="warn"]{ background:var(--warn-soft); color:var(--warn); border-color:transparent; }
+  .stat-chip[data-state="critical"]{ background:var(--critical-soft); color:var(--critical); border-color:transparent; }
+  .stat-chip .dot{ width:.42rem; height:.42rem; border-radius:50%; background:currentColor; }
+
+  .checklist{ display:flex; flex-wrap:wrap; gap:.4rem; }
+  .cl-chip{
+    font-size:.72rem; font-family:var(--font-mono); padding:.28rem .6rem; border-radius:999px;
+    border:1px solid var(--border); color:var(--ink-faint); background:var(--surface);
+  }
+  .cl-chip.on{ color:var(--good); border-color:transparent; background:var(--good-soft); font-weight:500; }
+
+  .preview-body{ padding:1.5rem 1.6rem 2.2rem; }
+  .empty-state{ text-align:center; color:var(--ink-faint); font-size:.86rem; padding:3rem 1rem; }
+  .empty-state .mark{ font-size:2rem; display:block; margin-bottom:.6rem; }
+
+  .prev-title{ font-weight:700; font-size:1.4rem; line-height:1.4; margin:0 0 1.1rem; color:var(--ink); text-wrap:balance; letter-spacing:-.01em; }
+  .prev-para{ margin:0 0 1.05rem; font-size:.94rem; color:var(--ink); }
+
+  .divider{ border:none; border-top:1px dashed var(--border); margin:1.5rem 0; position:relative; }
+  .divider::after{
+    content:"☕"; position:absolute; left:50%; top:-.62rem; transform:translateX(-50%);
+    background:var(--surface); padding:0 .5rem; font-size:.68rem;
+  }
+  .sec-label{
+    display:inline-flex; align-items:center; gap:.3rem; font-weight:600; font-size:.76rem;
+    color:var(--ink-soft); background:var(--surface-2); border:1px solid var(--border);
+    padding:.3rem .65rem; border-radius:999px; margin-bottom:.65rem;
+  }
+
+  .infocard{
+    background:var(--code-bg); border:1px solid var(--code-border); border-radius:16px;
+    padding:1rem 1.1rem; margin-bottom:1.1rem; font-family:var(--font-mono);
+  }
+  .infocard .infohead{
+    display:flex; align-items:center; justify-content:space-between; font-size:.72rem;
+    color:var(--code-key); opacity:.8; margin-bottom:.65rem; letter-spacing:.02em;
+  }
+  .infocard .row{ display:flex; gap:.7rem; padding:.4rem 0; border-bottom:1px dashed var(--code-border); font-size:.85rem; color:var(--code-ink); }
+  .infocard .row:last-child{ border-bottom:none; }
+  .infocard .row .key{ color:var(--code-key); flex-shrink:0; width:3.6rem; }
+
+  .orderbox, .audiencebox{
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:1rem 1.1rem; margin-bottom:1.1rem; box-shadow:var(--shadow-sm);
+  }
+  .orderbox .head, .audiencebox .head{
+    display:inline-flex; align-items:center; gap:.3rem; font-weight:600; font-size:.76rem;
+    padding:.3rem .65rem; border-radius:999px; margin-bottom:.65rem;
+  }
+  .orderbox .head{ background:var(--accent-soft); color:var(--accent-strong); }
+  .audiencebox .head{ background:var(--accent-2-soft); color:var(--accent-2); }
+  .orderbox ul, .audiencebox ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.4rem; }
+  .orderbox li, .audiencebox li{ font-size:.9rem; display:flex; justify-content:space-between; gap:.5rem; }
+  .orderbox li .price{ font-family:var(--font-mono); color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+  .orderbox .note{ display:block; font-size:.82rem; color:var(--ink-soft); margin-top:.1rem; }
+
+  .summarylist{ margin:0 0 1.1rem; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:.4rem; }
+  .summarylist li{ font-size:.92rem; display:flex; gap:.5rem; }
+  .summarylist li::before{ content:"•"; color:var(--accent-2); flex-shrink:0; font-weight:700; }
+
+  .toast{
+    position:fixed; bottom:1.2rem; left:50%; transform:translateX(-50%) translateY(10px);
+    background:var(--ink); color:var(--bg); padding:.55rem 1rem; border-radius:999px;
+    font-size:.82rem; font-weight:500; opacity:0; pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease; z-index:50;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  footer.foot{ margin-top:1.6rem; text-align:center; font-size:.75rem; color:var(--ink-faint); }
+
+  @media (prefers-reduced-motion: reduce){ .toast{ transition:none; } }
+</style>
+
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand-block">
+      <div class="brand-row">
+        <div class="brand"><span class="logo">원</span><span class="name">원고다방</span></div>
+        <span class="tagpill">NAVER BLOG DRAFT ASSEMBLER</span>
+      </div>
+      <p>딱 8가지만 채우면 상위노출·AI인용에 맞춘 구조로 <b>내 말투 그대로</b> 초안을 조립해줘요. 나머지 가게 정보는 네이버플레이스에서 복사해 붙여넣기만 하면 자동으로 읽어요.</p>
+    </div>
+    <div class="theme-note">입력 → 실시간 미리보기 → 복사</div>
+  </header>
+
+  <details class="guide">
+    <summary>내 말투 가이드 — 을지다방·훈커피 후기에서 뽑은 톤</summary>
+    <div class="guide-body">
+      <div class="guide-card">
+        <h4>도입부</h4>
+        <ul>
+          <li>"언젠가 한번 가봐야지 했었는데"</li>
+          <li>"생각보다 넘나 제 스탈이어서"</li>
+          <li>"웬걸,, 넘나 맛있는 ○○ 발견"</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>공간·분위기</h4>
+        <ul>
+          <li>"확실히 다른 공기가 느껴지더라구요"</li>
+          <li>"역시 평 좋은 곳은 이유가 있다"</li>
+          <li>이런 감성 사랑해🥰 / 개꿀~</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>시식평</h4>
+        <ul>
+          <li>"한입 먹고 너무 맛있어서 놀랐잖아요"</li>
+          <li>존맛탱ㅠㅠ / 헥헥 / 계속 생각나는 맛</li>
+          <li>"집 앞이면 최소 주 1회 방문각"</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>마무리</h4>
+        <ul>
+          <li>"솔직히 멀리서도 올만한 곳입니다,,"</li>
+          <li>"못 갔으면 평생 후회할 뻔"</li>
+          <li>[주문 메뉴] / 🤎이런 분들에게 추천🤎 형식</li>
+        </ul>
+      </div>
+    </div>
+  </details>
+
+  <div class="layout">
+
+    <nav class="stepnav" id="stepnav"></nav>
+
+    <!-- FORM -->
+    <div class="panel form-panel">
+
+      <div class="step" id="step-1">
+        <div class="step-head"><span class="step-num">1</span><h2>키워드 · 가게명 · 차별포인트</h2></div>
+        <p class="step-hint">키워드는 본문 전체에서 정확히 5회 노출을 목표로 자동 체크해요 (제목 포함).</p>
+        <div class="field"><label for="keyword">핵심 키워드 (지역+업종, 예: 을지로3가역 카페)</label>
+          <input type="text" id="keyword" oninput="render()" placeholder="을지로3가역 카페"></div>
+        <div class="field-row">
+          <div class="field"><label for="place">가게명</label><input type="text" id="place" oninput="render()" placeholder="을지다방"></div>
+          <div class="field"><label for="hook">차별포인트</label><input type="text" id="hook" oninput="render()" placeholder="찐 레트로 감성"></div>
+        </div>
+        <div class="titlegen"><button class="btn-primary" onclick="genTitles()">제목 후보 생성</button></div>
+        <div class="field"><label for="titleInput">제목 (후보 클릭 또는 직접 입력)</label>
+          <input type="text" id="titleInput" oninput="render()" placeholder="을지로3가역 카페 을지다방, 찐 레트로 감성 인정"></div>
+        <div id="titleCands" class="title-candidates"></div>
+      </div>
+
+      <div class="step" id="step-2">
+        <div class="step-head"><span class="step-num">2</span><h2>네이버플레이스 정보</h2></div>
+        <p class="step-hint">네이버플레이스 페이지 내용을 그대로 복사해서 붙여넣으면 주소·영업시간·휴무일·전화·주차·역거리를 자동으로 읽어요. (샌드박스라 API를 직접 호출할 순 없어서, 복사-붙여넣기로 대신해요)</p>
+        <div class="field"><textarea id="npRaw" class="tall" oninput="onNpRaw()" placeholder="예)&#10;을지다방&#10;서울특별시 중구 을지로 124-1 2층&#10;영업시간 11:00-20:00&#10;정기휴무 화요일&#10;070-0000-0000&#10;을지로3가역 10번 출구에서 44m"></textarea></div>
+        <div class="chips" id="npPills"></div>
+        <details class="npedit">
+          <summary>인식 결과가 다르면 여기서 직접 수정</summary>
+          <div class="field-row">
+            <div class="field"><label for="addr">주소</label><input type="text" id="addr" oninput="render()"></div>
+            <div class="field"><label for="hours">영업시간</label><input type="text" id="hours" oninput="render()"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="closed">휴무일</label><input type="text" id="closed" oninput="render()"></div>
+            <div class="field"><label for="phone">전화</label><input type="text" id="phone" oninput="render()"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="parking">주차</label><input type="text" id="parking" oninput="render()"></div>
+            <div class="field"><label for="station">역 · 거리</label><input type="text" id="station" oninput="render()"></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="step" id="step-3">
+        <div class="step-head"><span class="step-num">3</span><h2>방문 계기</h2></div>
+        <p class="step-hint">왜 가게 됐는지, 상황을 짧은 줄바꿈으로. 칩을 누르면 커서 위치에 삽입돼요.</p>
+        <div class="field"><textarea id="intro" class="tall" oninput="render()" placeholder="언젠가 한번 가봐야지 했었는데&#10;드디어 가보게 되었습니다"></textarea></div>
+        <div class="chips" id="introChips"></div>
+      </div>
+
+      <div class="step" id="step-4">
+        <div class="step-head"><span class="step-num">4</span><h2>주문 메뉴 · 시식평</h2></div>
+        <p class="step-hint">실제로 주문한 메뉴만. 오감 표현 + 비교급 한 번은 넣기.</p>
+        <div class="rowlist" id="orderList"></div>
+        <button class="btn-add" onclick="addOrder()">+ 주문 추가</button>
+        <div class="chips" id="tasteChips"></div>
+      </div>
+
+      <div class="step" id="step-5">
+        <div class="step-head"><span class="step-num">5</span><h2>총평</h2></div>
+        <p class="step-hint">AI 개요가 그대로 발췌하는 지점이라 3~5줄로 또렷하게.</p>
+        <div class="rowlist" id="summaryList"></div>
+        <button class="btn-add" onclick="addSummary()">+ 총평 추가</button>
+      </div>
+
+      <div class="step" id="step-6">
+        <div class="step-head"><span class="step-num">6</span><h2>마무리 CTA</h2></div>
+        <div class="field"><textarea id="outro" oninput="render()" placeholder="화려한 대신 조용히 감성을 느끼고 싶을 때 추천합니다!"></textarea></div>
+        <div class="chips" id="outroChips"></div>
+        <div class="rowlist" id="audienceList" style="margin-top:.8rem;"></div>
+        <button class="btn-add" onclick="addAudience()">+ 추천 대상 추가 (선택)</button>
+      </div>
+
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="panel preview-col">
+      <div class="status-bar">
+        <div class="status-row">
+          <h3>미리보기</h3>
+          <div class="actions"><button class="btn-ghost" onclick="copyDraft()">복사하기</button></div>
+        </div>
+        <div class="status-row">
+          <span id="kwChip" class="stat-chip" data-state="warn"><span class="dot"></span>키워드 0회</span>
+          <span id="titleKwChip" class="stat-chip" data-state="warn"><span class="dot"></span>제목에 키워드 없음</span>
+          <span id="charChip" class="stat-chip" data-state="good"><span class="dot"></span>글자수 0/3000자</span>
+        </div>
+        <div class="checklist" id="checklist"></div>
+      </div>
+      <div class="preview-body" id="previewBody"></div>
+    </div>
+
+  </div>
+
+  <footer class="foot">원고다방 · 초안 조립 도구 — 발행 전 사실관계(주소·영업시간·가격)는 꼭 다시 확인하세요.</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const introBank = [
+    "언젠가 한번 가봐야지 했었는데 드디어 가보게 되었습니다",
+    "생각보다 넘나 제 스탈이어서 또 방문해야지 했던 곳이에요",
+    "웬걸,, 넘나 맛있는 곳 발견",
+    "카맵 뒤지다가 평이 좋아서 간 곳인데",
+    "역시 평 좋은 곳은 이유가 있다"
+  ];
+  const tasteBank = [
+    "한입 먹고 너무 맛있어서 놀랐잖아요",
+    "정말 처음 먹어보는 맛이었어요",
+    "존맛탱ㅠㅠ",
+    "계속 생각나는 맛",
+    "집 앞에 있으면 최소 주 1회만 방문할 곳"
+  ];
+  const outroBank = [
+    "화려한 대신 조용히 감성을 느끼고 싶을 때 추천합니다",
+    "솔직히 여기는 멀리서도 올만한 곳입니다,,",
+    "제발 가주세요",
+    "못 갔으면 평생 후회할 뻔"
+  ];
+
+  const stepDefs = [
+    ['step-1','키워드·제목'], ['step-2','플레이스 정보'], ['step-3','방문계기'],
+    ['step-4','주문·시식평'], ['step-5','총평'], ['step-6','마무리']
+  ];
+
+  function buildChips(container, bank){
+    const el = document.getElementById(container);
+    el.innerHTML = bank.map(p => `<button type="button" class="chip" onclick="insertPhrase(${JSON.stringify(p)})">${escapeHtml(p)}</button>`).join('');
+  }
+
+  function buildStepNav(){
+    const nav = document.getElementById('stepnav');
+    nav.innerHTML = stepDefs.map(([id,label], i) =>
+      `<button type="button" class="stepnav-item" data-target="${id}" onclick="goStep('${id}')"><span class="num">${i+1}</span><span class="lbl">${escapeHtml(label)}</span></button>`
+    ).join('');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          document.querySelectorAll('.stepnav-item').forEach(b => b.classList.remove('active'));
+          const btn = nav.querySelector(`[data-target="${entry.target.id}"]`);
+          if (btn) btn.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+    stepDefs.forEach(([id]) => { const el = document.getElementById(id); if (el) io.observe(el); });
+    window.__goStep = (id) => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    };
+  }
+  function goStep(id){ window.__goStep && window.__goStep(id); }
+
+  let lastFocused = null;
+  document.addEventListener('focusin', e => { if (e.target.matches('textarea')) lastFocused = e.target; });
+
+  function insertPhrase(text){
+    if (lastFocused && document.body.contains(lastFocused)){
+      const el = lastFocused;
+      const start = el.selectionStart ?? el.value.length;
+      const end = el.selectionEnd ?? el.value.length;
+      const before = el.value.slice(0, start);
+      const sep = before && !before.endsWith('\n') ? '\n' : '';
+      el.value = before + sep + text + el.value.slice(end);
+      el.focus();
+      render();
+      toast('문구를 삽입했어요');
+    } else {
+      navigator.clipboard.writeText(text).then(()=>toast('클립보드에 복사했어요 — 원하는 칸에 붙여넣으세요'));
+    }
+  }
+
+  function toast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(()=> t.classList.remove('show'), 1600);
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function val(id){ return (document.getElementById(id)?.value || '').trim(); }
+  function toParas(text){ return text.split(/\n+/).map(l=>l.trim()).filter(Boolean); }
+
+  /* ---------- 네이버플레이스 붙여넣기 파서 ---------- */
+  function parseNaverInfo(raw){
+    const lines = raw.split(/\n+/).map(l=>l.trim()).filter(Boolean);
+    const res = { address:'', hours:'', closed:'', phone:'', parking:'', station:'' };
+    const phoneRe = /(0\d{1,2}[-.\s]?\d{3,4}[-.\s]?\d{4})/;
+    const timeRe = /\d{1,2}\s*:\s*\d{2}\s*[-~]\s*\d{1,2}\s*:\s*\d{2}/;
+    const distRe = /\d+\s?m\b/;
+    for (const line of lines){
+      if (!res.phone){ const m = line.match(phoneRe); if (m) res.phone = m[1]; }
+      if (!res.hours){ const m = line.match(timeRe); if (m) res.hours = m[0].replace(/\s+/g,''); }
+      if (!res.closed && /휴무/.test(line)){
+        res.closed = line.replace(/^[^가-힣]*/,'').replace(/정기휴무|휴무일?|[-:]/g,' ').replace(/\s+/g,' ').trim();
+      }
+      if (!res.parking && /주차/.test(line)){
+        res.parking = line.replace(/^[^가-힣]*/,'').trim();
+      }
+      if (!res.station && /역/.test(line) && (/출구/.test(line) || distRe.test(line))){
+        res.station = line.replace(/^[^가-힣]*/,'').trim();
+      }
+      if (!res.address){
+        const hasRoad = /(로|길|동|가)\s?\d/.test(line) || /(시|도)\s?[가-힣]+(시|군|구)/.test(line);
+        const isNoise = /휴무|주차|영업|전화|출구|^\d{2,3}[-.\s]?\d{3,4}/.test(line) || timeRe.test(line) || phoneRe.test(line);
+        if (hasRoad && !isNoise) res.address = line;
+      }
+    }
+    return res;
+  }
+  function onNpRaw(){
+    const raw = val('npRaw');
+    const p = parseNaverInfo(raw);
+    document.getElementById('addr').value = p.address;
+    document.getElementById('hours').value = p.hours;
+    document.getElementById('closed').value = p.closed;
+    document.getElementById('phone').value = p.phone;
+    document.getElementById('parking').value = p.parking;
+    document.getElementById('station').value = p.station;
+    render();
+  }
+  function updateNpPills(){
+    const items = [
+      ['📍', val('addr')], ['🕓', val('hours') + (val('closed') ? ` · 휴무 ${val('closed')}` : '')],
+      ['📞', val('phone')], ['🅿️', val('parking')], ['🚇', val('station')]
+    ].filter(([,v]) => v && v.trim());
+    const box = document.getElementById('npPills');
+    box.innerHTML = items.length
+      ? items.map(([ico,v]) => `<span class="chip static">${ico} ${escapeHtml(v)}</span>`).join('')
+      : `<span class="chip static" style="opacity:.6">붙여넣으면 여기에 인식된 정보가 표시돼요</span>`;
+  }
+
+  /* ---------- dynamic row lists ---------- */
+  function rowItem(container, fieldsHtml){
+    const wrap = document.createElement('div');
+    wrap.className = 'rowitem';
+    wrap.innerHTML = `<div class="rowfields">${fieldsHtml}</div><button type="button" class="btn-remove" onclick="removeRow(this)">×</button>`;
+    document.getElementById(container).appendChild(wrap);
+    return wrap;
+  }
+  function removeRow(btn){ btn.closest('.rowitem').remove(); render(); }
+
+  function addOrder(name, price, note){
+    rowItem('orderList', `
+      <div class="rowfields inline">
+        <input type="text" placeholder="주문 메뉴" class="od-name" value="${escapeHtml(name||'')}" oninput="render()">
+        <input type="text" placeholder="가격" class="od-price price" value="${escapeHtml(price||'')}" oninput="render()">
+      </div>
+      <textarea placeholder="시식평 한 줄" oninput="render()">${escapeHtml(note||'')}</textarea>`);
+    render();
+  }
+  function addSummary(text){
+    rowItem('summaryList', `<input type="text" placeholder="총평 한 줄 (예: 찐 레트로 감성 카페)" value="${escapeHtml(text||'')}" oninput="render()">`);
+    render();
+  }
+  function addAudience(text){
+    rowItem('audienceList', `<input type="text" placeholder="추천 대상 (예: 조용히 쉬고 싶은 분)" value="${escapeHtml(text||'')}" oninput="render()">`);
+    render();
+  }
+
+  function readOrders(){
+    return [...document.querySelectorAll('#orderList .rowitem')].map(r=>({
+      name: r.querySelector('.od-name').value.trim(),
+      price: r.querySelector('.od-price').value.trim(),
+      note: r.querySelector('textarea').value.trim()
+    })).filter(o=>o.name);
+  }
+  function readSummary(){
+    return [...document.querySelectorAll('#summaryList .rowitem input')].map(i=>i.value.trim()).filter(Boolean);
+  }
+  function readAudience(){
+    return [...document.querySelectorAll('#audienceList .rowitem input')].map(i=>i.value.trim()).filter(Boolean);
+  }
+
+  /* ---------- title generator ---------- */
+  function genTitles(){
+    const kw = val('keyword') || '지역 카페';
+    const place = val('place') || '가게명';
+    const hook = val('hook') || '찐 감성';
+    const cands = [
+      `${kw} ${place}, ${hook} 하나로 설명 끝`,
+      `${place} — ${kw} 중에서 여기가 진짜였음 (feat.${hook})`,
+      `${kw} 추천 ${place} · ${hook} 인정`
+    ];
+    const box = document.getElementById('titleCands');
+    box.innerHTML = cands.map(c => `<button type="button" class="title-cand" onclick="pickTitle(this)">${escapeHtml(c)}</button>`).join('');
+  }
+  function pickTitle(btn){ document.getElementById('titleInput').value = btn.textContent; render(); }
+
+  /* ---------- preview + checklist ---------- */
+  function countKeyword(kw, text){
+    if (!kw) return 0;
+    const esc = kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    const re = new RegExp(esc, 'gi');
+    return (text.match(re) || []).length;
+  }
+
+  function render(){
+    const kw = val('keyword');
+    const place = val('place');
+    const title = val('titleInput');
+    const addr = val('addr'), hours = val('hours'), closed = val('closed'), phone = val('phone'), parking = val('parking'), station = val('station');
+    const intro = val('intro');
+    const orders = readOrders();
+    const summary = readSummary();
+    const audience = readAudience();
+    const outro = val('outro');
+
+    updateNpPills();
+
+    const allText = [title, intro, summary.join(' '), outro].join(' ');
+    const kwCount = countKeyword(kw, allText);
+    const kwChip = document.getElementById('kwChip');
+    let state = 'critical';
+    if (kwCount === 5) state = 'good';
+    else if (kwCount === 4 || kwCount === 6) state = 'warn';
+    kwChip.dataset.state = state;
+    kwChip.innerHTML = `<span class="dot"></span>키워드 ${kwCount}회 (목표 5회)`;
+
+    const titleHasKw = kw && title.toLowerCase().includes(kw.toLowerCase());
+    const tChip = document.getElementById('titleKwChip');
+    tChip.dataset.state = titleHasKw ? 'good' : 'critical';
+    tChip.innerHTML = `<span class="dot"></span>제목에 키워드 ${titleHasKw ? '포함' : '없음'}`;
+
+    const items = [
+      ['제목', !!title],
+      ['플레이스 정보', [addr,hours,phone].filter(Boolean).length >= 2],
+      ['방문계기', !!intro],
+      ['주문·시식평', orders.length >= 1],
+      ['총평', summary.length >= 2],
+      ['마무리', !!outro],
+    ];
+    document.getElementById('checklist').innerHTML = items.map(([label,on]) =>
+      `<span class="cl-chip ${on?'on':''}">${on?'✓':'○'} ${label}</span>`).join('');
+
+    const body = document.getElementById('previewBody');
+    if (!place && !title){
+      body.innerHTML = `<div class="empty-state"><span class="mark">☕</span>가게명이나 제목부터 채워보세요.<br>왼쪽 폼을 채우면 여기 실시간으로 초안이 쌓여요.</div>`;
+      return;
+    }
+
+    let html = '';
+    html += `<h1 class="prev-title">${escapeHtml(title || place)}</h1>`;
+
+    if (addr || hours || closed || phone || parking || station){
+      html += `<div class="infocard"><div class="infohead"><span>${escapeHtml(place || '가게명')}</span><span>NAVER PLACE</span></div>`;
+      if (addr) html += `<div class="row"><span class="key">📍 주소</span><span>${escapeHtml(addr)}</span></div>`;
+      if (hours) html += `<div class="row"><span class="key">🕓 시간</span><span>${escapeHtml(hours)}${closed?` · 휴무 ${escapeHtml(closed)}`:''}</span></div>`;
+      if (phone) html += `<div class="row"><span class="key">📞 전화</span><span>${escapeHtml(phone)}</span></div>`;
+      if (parking) html += `<div class="row"><span class="key">🅿️ 주차</span><span>${escapeHtml(parking)}</span></div>`;
+      if (station) html += `<div class="row"><span class="key">🚇 위치</span><span>${escapeHtml(station)}</span></div>`;
+      html += `</div>`;
+    }
+
+    html += `<hr class="divider">`;
+
+    if (intro) html += `<p class="prev-para">${toParas(intro).join('<br>')}</p>`;
+    if (station) html += `<p class="prev-para">${escapeHtml(place||'이곳')}은 ${escapeHtml(station)}에 위치하고 있어요.</p>`;
+
+    if (orders.length){
+      html += `<hr class="divider">`;
+      html += `<div class="orderbox"><div class="head">✅ 주문 메뉴</div><ul>` +
+        orders.map(o => `<li>✔️ ${escapeHtml(o.name)}${o.price?` <span class="price">| ${escapeHtml(o.price)}</span>`:''}${o.note?`<span class="note">${escapeHtml(o.note)}</span>`:''}</li>`).join('') +
+        `</ul></div>`;
+    }
+
+    if (summary.length){
+      html += `<hr class="divider">`;
+      html += `<span class="sec-label">📝 총평</span>`;
+      html += `<ul class="summarylist">` + summary.map(s => `<li>${escapeHtml(s)}</li>`).join('') + `</ul>`;
+    }
+
+    if (audience.length){
+      html += `<div class="audiencebox"><div class="head">🤎 이런 분들에게 추천</div><ul>` +
+        audience.map(a => `<li>✔️ ${escapeHtml(a)}</li>`).join('') + `</ul></div>`;
+    }
+
+    if (outro){
+      html += `<hr class="divider">`;
+      html += `<p class="prev-para">${toParas(outro).join('<br>')}</p>`;
+    }
+
+    body.innerHTML = html;
+
+    const plainLen = buildPlainText().replace(/\n/g, '').length;
+    const charChip = document.getElementById('charChip');
+    let charState = 'good';
+    if (plainLen > 3000) charState = 'critical';
+    else if (plainLen > 2800) charState = 'warn';
+    charChip.dataset.state = charState;
+    charChip.innerHTML = `<span class="dot"></span>글자수 ${plainLen}/3000자`;
+  }
+
+  function buildPlainText(){
+    const place = val('place'), title = val('titleInput');
+    const addr = val('addr'), hours = val('hours'), closed = val('closed'), phone = val('phone'), parking = val('parking'), station = val('station');
+    const intro = val('intro'), outro = val('outro');
+    const orders = readOrders(), summary = readSummary(), audience = readAudience();
+
+    let lines = [];
+    lines.push(title || place);
+    lines.push('');
+    if (addr) lines.push(`📍 ${addr}`);
+    if (hours) lines.push(`🕓 ${hours}${closed ? ` (휴무 ${closed})` : ''}`);
+    if (phone) lines.push(`📞 ${phone}`);
+    if (parking) lines.push(`🅿️ ${parking}`);
+    lines.push('', '------', '');
+    if (intro) lines.push(intro, '');
+    if (station) lines.push(`${place || '이곳'}은 ${station}에 위치하고 있어요.`, '');
+    if (orders.length){
+      lines.push('------', '');
+      lines.push('✅주문 메뉴');
+      orders.forEach(o => lines.push(`✔️${o.name}${o.price ? ` | ${o.price}` : ''}`));
+      orders.forEach(o => { if (o.note) lines.push(o.note); });
+      lines.push('');
+    }
+    if (summary.length){
+      lines.push('------', '', '📝 총평');
+      summary.forEach(s => lines.push(`• ${s}`));
+      lines.push('');
+    }
+    if (audience.length){
+      lines.push('🤎이런 분들에게 추천🤎');
+      audience.forEach(a => lines.push(`✔️${a}`));
+      lines.push('');
+    }
+    if (outro){ lines.push('------', '', outro); }
+    return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  function copyDraft(){
+    const text = buildPlainText();
+    navigator.clipboard.writeText(text).then(()=> toast('초안을 복사했어요'))
+      .catch(()=> toast('복사에 실패했어요, 직접 드래그해서 복사해주세요'));
+  }
+
+  /* ---------- init ---------- */
+  buildStepNav();
+  buildChips('introChips', introBank);
+  buildChips('tasteChips', tasteBank);
+  buildChips('outroChips', outroBank);
+  addOrder('', '', '');
+  addSummary('');
+  addSummary('');
+  render();
+</script>
