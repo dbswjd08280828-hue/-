@@ -295,6 +295,21 @@
   details.npedit summary::-webkit-details-marker{ display:none; }
   details.npedit .field-row{ margin-top:.6rem; }
 
+  .dropzone{
+    border:1.5px dashed var(--border); border-radius:12px; padding:1rem;
+    text-align:center; color:var(--ink-faint); font-size:.8rem; cursor:pointer;
+    background:var(--surface-2); transition:border-color .12s ease, background .12s ease, color .12s ease;
+  }
+  .dropzone:hover{ border-color:var(--accent); color:var(--accent-strong); }
+  .dropzone.drag{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent-strong); }
+  .imggrid{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.6rem; }
+  .imgthumb{ position:relative; width:72px; height:72px; border-radius:10px; overflow:hidden; border:1px solid var(--border); flex-shrink:0; }
+  .imgthumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .imgthumb .rm{
+    position:absolute; top:2px; right:2px; width:1.2rem; height:1.2rem; border-radius:50%;
+    background:rgba(0,0,0,.55); color:#fff; border:none; font-size:.7rem; cursor:pointer; line-height:1; padding:0;
+  }
+
   .preview-col{ position:relative; }
   @media (min-width:981px){ .preview-col{ position:sticky; top:1.25rem; max-height:calc(100vh - 2.5rem); overflow-y:auto; } }
   .status-bar{
@@ -482,6 +497,16 @@
             <div class="field"><label for="station">역 · 거리</label><input type="text" id="station" oninput="render()"></div>
           </div>
         </details>
+
+        <div class="field" style="margin-top:.9rem;">
+          <label>스크린샷 첨부 (선택, 참고용)</label>
+          <div class="dropzone" id="dropzone" onclick="document.getElementById('imgInput').click()">
+            <input type="file" id="imgInput" accept="image/*" multiple style="display:none" onchange="onImgSelect(event)">
+            <span class="dz-text">클릭하거나 이미지를 끌어다 놓으세요</span>
+          </div>
+          <div class="imggrid" id="imgGrid"></div>
+        </div>
+        <p class="step-hint" style="margin-left:0;">💡 여기 붙인 이미지는 글자를 자동으로 읽지는 못해요 (이 화면엔 그런 기능이 없어요). 브라우저 안에만 보관되는 참고용 썸네일이에요 — 실제 텍스트 인식은 위 붙여넣기 칸을 쓰거나, 스크린샷을 이 채팅창으로 저한테 보내주시면 제가 읽어서 옮겨드릴게요.</p>
       </div>
 
       <div class="step" id="step-3">
@@ -675,6 +700,36 @@
     box.innerHTML = items.length
       ? items.map(([ico,v]) => `<span class="chip static">${ico} ${escapeHtml(v)}</span>`).join('')
       : `<span class="chip static" style="opacity:.6">붙여넣으면 여기에 인식된 정보가 표시돼요</span>`;
+  }
+
+  /* ---------- 참고용 이미지 첨부 (읽지는 못함, 썸네일만) ---------- */
+  let attachedImages = [];
+  function fileToThumb(file){
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      attachedImages.push({ id: Math.random().toString(36).slice(2), dataUrl: reader.result, name: file.name });
+      renderImgGrid();
+    };
+    reader.readAsDataURL(file);
+  }
+  function onImgSelect(e){
+    [...e.target.files].forEach(fileToThumb);
+    e.target.value = '';
+  }
+  function removeImg(id){ attachedImages = attachedImages.filter(i => i.id !== id); renderImgGrid(); }
+  function renderImgGrid(){
+    document.getElementById('imgGrid').innerHTML = attachedImages.map(i =>
+      `<div class="imgthumb"><img src="${i.dataUrl}" alt="${escapeHtml(i.name)}"><button type="button" class="rm" onclick="removeImg('${i.id}')">×</button></div>`
+    ).join('');
+  }
+  function setupDropzone(){
+    const dz = document.getElementById('dropzone');
+    ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag'); }));
+    ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('drag'); }));
+    dz.addEventListener('drop', e => {
+      [...(e.dataTransfer?.files || [])].forEach(fileToThumb);
+    });
   }
 
   /* ---------- dynamic row lists ---------- */
@@ -886,6 +941,8 @@
   buildChips('introChips', introBank);
   buildChips('tasteChips', tasteBank);
   buildChips('outroChips', outroBank);
+  setupDropzone();
+  renderImgGrid();
   addOrder('', '', '');
   addSummary('');
   addSummary('');
