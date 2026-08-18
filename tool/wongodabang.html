@@ -532,7 +532,13 @@
       </div>
 
       <div class="step" id="step-6">
-        <div class="step-head"><span class="step-num">6</span><h2>마무리 CTA</h2></div>
+        <div class="step-head"><span class="step-num">6</span><h2>추가 정보 (선택)</h2></div>
+        <p class="step-hint">리뷰 조사 결과, 시그니처 메뉴 비하인드, 꼭 넣고 싶은 정보 등 자유롭게. 총평과 마무리 사이에 들어가요.</p>
+        <div class="field"><textarea id="extra" class="tall" oninput="render()" placeholder="예) 네이버·카카오맵 리뷰에서 다들 티라미수를 극찬함 / 사장님이 원두 직접 로스팅"></textarea></div>
+      </div>
+
+      <div class="step" id="step-7">
+        <div class="step-head"><span class="step-num">7</span><h2>마무리 CTA</h2></div>
         <div class="field"><textarea id="outro" oninput="render()" placeholder="화려한 대신 조용히 감성을 느끼고 싶을 때 추천합니다!"></textarea></div>
         <div class="chips" id="outroChips"></div>
         <div class="rowlist" id="audienceList" style="margin-top:.8rem;"></div>
@@ -589,7 +595,7 @@
 
   const stepDefs = [
     ['step-1','키워드·제목'], ['step-2','플레이스 정보'], ['step-3','방문계기'],
-    ['step-4','주문·시식평'], ['step-5','총평'], ['step-6','마무리']
+    ['step-4','주문·시식평'], ['step-5','총평'], ['step-6','추가 정보'], ['step-7','마무리']
   ];
 
   function buildChips(container, bank){
@@ -806,11 +812,12 @@
     const orders = readOrders();
     const summary = readSummary();
     const audience = readAudience();
+    const extra = val('extra');
     const outro = val('outro');
 
     updateNpPills();
 
-    const allText = [title, intro, summary.join(' '), outro].join(' ');
+    const allText = [title, intro, summary.join(' '), extra, outro].join(' ');
     const kwCount = countKeyword(kw, allText);
     const kwChip = document.getElementById('kwChip');
     let state = 'critical';
@@ -872,6 +879,12 @@
       html += `<ul class="summarylist">` + summary.map(s => `<li>${escapeHtml(s)}</li>`).join('') + `</ul>`;
     }
 
+    if (extra){
+      html += `<hr class="divider">`;
+      html += `<span class="sec-label">💡 추가 정보</span>`;
+      html += `<p class="prev-para">${toParas(extra).join('<br>')}</p>`;
+    }
+
     if (audience.length){
       html += `<div class="audiencebox"><div class="head">🤎 이런 분들에게 추천</div><ul>` +
         audience.map(a => `<li>✔️ ${escapeHtml(a)}</li>`).join('') + `</ul></div>`;
@@ -896,7 +909,7 @@
   function buildPlainText(){
     const place = val('place'), title = val('titleInput');
     const addr = val('addr'), hours = val('hours'), closed = val('closed'), phone = val('phone'), parking = val('parking'), station = val('station');
-    const intro = val('intro'), outro = val('outro');
+    const intro = val('intro'), outro = val('outro'), extra = val('extra');
     const orders = readOrders(), summary = readSummary(), audience = readAudience();
 
     let lines = [];
@@ -921,6 +934,7 @@
       summary.forEach(s => lines.push(`• ${s}`));
       lines.push('');
     }
+    if (extra){ lines.push('------', '', '💡 추가 정보', extra, ''); }
     if (audience.length){
       lines.push('🤎이런 분들에게 추천🤎');
       audience.forEach(a => lines.push(`✔️${a}`));
